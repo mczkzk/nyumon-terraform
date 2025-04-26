@@ -178,7 +178,7 @@ resource "aws_instance" "web" {
     network_interface_id = aws_network_interface.web.id
     device_index         = 0
   }
-  user_data = file("wordpress.sh")
+  user_data = file("wordpress.sh") # インスタンス起動時に実行
   tags = {
     Name = "Web"
   }
