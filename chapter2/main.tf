@@ -12,7 +12,7 @@ provider "docker" {
 }
 
 resource "docker_image" "nginx" {
-  name         = "nginx:latest"
+  name         = "nginx:stable-alpine"
   keep_locally = false
 }
 
@@ -26,7 +26,7 @@ resource "docker_container" "nginx" {
 }
 
 variable "container_name" {
-  default = "tutorial"
-  type = string
+  default     = "tutorial"
+  type        = string
   description = "The name of the container"
 }
