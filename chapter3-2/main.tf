@@ -163,3 +163,35 @@ resource "aws_db_subnet_group" "db" {
     Name = "Wordpress DB Subnet Group"
   }
 }
+
+resource "random_password" "wordpress" {
+  length  = 16
+  special = true
+  override_special = "!#$%&*()-_=+[]{}|:;<>,.?/\\"
+}
+
+# EC2
+resource "aws_instance" "web" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  network_interface {
+    network_interface_id = aws_network_interface.web.id
+    device_index         = 0
+  }
+  user_data = file("wordpress.sh")
+  tags = {
+    Name = "Web"
+  }
+}
+# ネットワークインターフェイス
+resource "aws_network_interface" "web" {
+  subnet_id   = aws_subnet.public.id
+  private_ips = ["10.0.1.50"]
+  security_groups = [aws_security_group.web.id]
+}
+# Elastic IP
+resource "aws_eip" "wordpress" {
+  network_interface = aws_network_interface.web.id
+  domain = "vpc"
+}
+
