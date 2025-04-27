@@ -9,6 +9,6 @@ output "rds_endpoint" {
 }
 
 output "rds_password" {
-  value = random_password.wordpress.result
+  value     = random_password.wordpress.result
   sensitive = true
 }

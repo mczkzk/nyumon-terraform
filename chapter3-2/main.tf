@@ -28,16 +28,16 @@ resource "aws_subnet" "public" {
   }
 }
 resource "aws_subnet" "private_a" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.2.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.2.0/24"
   availability_zone = "ap-northeast-1a"
   tags = {
     Name = "private_a"
   }
 }
 resource "aws_subnet" "private_c" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.0.3.0/24"
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.3.0/24"
   availability_zone = "ap-northeast-1c"
   tags = {
     Name = "private_c"
@@ -74,9 +74,9 @@ resource "aws_main_route_table_association" "main" {
 
 # Security Group
 resource "aws_security_group" "web" {
-  name = "web"
+  name        = "web"
   description = "Allow Web Traffic"
-  vpc_id = aws_vpc.main.id
+  vpc_id      = aws_vpc.main.id
 
   # インバウンドルール
   ingress {
@@ -133,23 +133,23 @@ resource "aws_security_group" "db" {
 
 # RDS
 resource "aws_db_instance" "wordpress" {
-  allocated_storage    = 20
-  storage_type         = "gp2"
-  engine               = "mysql"
-  engine_version       = "8.0.mysql_aurora.3.02.0"
-  instance_class       = "db.t3.micro"
-  db_name              = "wpdb"
-  username             = "dba"
-  password             = random_password.wordpress.result # Randomプロバイダーを使用
-  parameter_group_name = "default.mysql80"
-  multi_az             = false
-  db_subnet_group_name = aws_db_subnet_group.db.name
-  vpc_security_group_ids = [aws_security_group.db.id]
+  allocated_storage       = 20
+  storage_type            = "gp2"
+  engine                  = "mysql"
+  engine_version          = "8.0.35"
+  instance_class          = "db.t3.micro"
+  db_name                 = "wpdb"
+  username                = "dba"
+  password                = random_password.wordpress.result
+  parameter_group_name    = "default.mysql8.0"
+  multi_az                = false
+  db_subnet_group_name    = aws_db_subnet_group.db.name
+  vpc_security_group_ids  = [aws_security_group.db.id]
   backup_retention_period = "7"
-  backup_window          = "01:00-02:00"
-  skip_final_snapshot  = true
-  max_allocated_storage = 200
-  identifier = "wordpress"
+  backup_window           = "01:00-02:00"
+  skip_final_snapshot     = true
+  max_allocated_storage   = 200
+  identifier              = "wordpress"
   tags = {
     Name = "Wordpress DB"
   }
@@ -165,33 +165,33 @@ resource "aws_db_subnet_group" "db" {
 }
 
 resource "random_password" "wordpress" {
-  length  = 16
-  special = true
+  length           = 16
+  special          = true
   override_special = "!#$%&*()-_=+[]{}|:;<>,.?/\\"
 }
 
 # EC2
 resource "aws_instance" "web" {
-  ami           = "ami-0c55b159cbfafe1f0"
+  ami           = "ami-05206bf8aecfc7ae6"  # Amazon Linux 2023 AMI in ap-northeast-1
   instance_type = "t2.micro"
   network_interface {
     network_interface_id = aws_network_interface.web.id
     device_index         = 0
   }
-  user_data = file("wordpress.sh") # インスタンス起動時に実行
+  user_data = file("wordpress.sh")
   tags = {
     Name = "Web"
   }
 }
 # ネットワークインターフェイス
 resource "aws_network_interface" "web" {
-  subnet_id   = aws_subnet.public.id
-  private_ips = ["10.0.1.50"]
+  subnet_id       = aws_subnet.public.id
+  private_ips     = ["10.0.1.50"]
   security_groups = [aws_security_group.web.id]
 }
 # Elastic IP
 resource "aws_eip" "wordpress" {
   network_interface = aws_network_interface.web.id
-  domain = "vpc"
+  domain            = "vpc"
 }
 

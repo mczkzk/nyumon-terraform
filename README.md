@@ -8,8 +8,10 @@ https://github.com/jacopen/practical-terraform-scripts
 ```
 terraform init
 terraform plan
-terraform apply
+terraform validate
 terraform fmt
+
+terraform apply
 
 terraform destroy
 ```
