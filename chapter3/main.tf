@@ -5,6 +5,12 @@ terraform {
       version = "~> 5.0"
     }
   }
+  cloud {
+    organization = "mk-lab"
+    workspaces {
+      name = "aws-infra"
+    }
+  }
 }
 
 provider "aws" {
