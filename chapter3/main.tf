@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-1"  # Tokyo region
+  region = "ap-northeast-1" # Tokyo region
 }
 
 # Get the latest Amazon Linux 2023 AMI
@@ -39,6 +39,7 @@ resource "aws_instance" "test_server" {
   instance_type = "t2.micro"
 
   tags = {
-    Name = "TestInstance"
+    Name      = "TestInstance",
+    ManagedBy = "HCP Terraform"
   }
 }
