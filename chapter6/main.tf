@@ -5,6 +5,12 @@ terraform {
       version = "~> 4.0.0"
     }
   }
+  cloud {
+    organization = "mk-lab"
+    workspaces {
+      name = "terraform-nyumon-chapter6"
+    }
+  }
 }
 
 provider "aws" {
