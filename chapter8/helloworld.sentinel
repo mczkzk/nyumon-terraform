@@ -1,1 +1,4 @@
-main = "Hello, world" is not "Hello, 世界"
+// print test
+is_valid = rule { "Hello, world" is not "Hello, 世界" }
+
+main = rule { is_valid }
